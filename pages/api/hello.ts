@@ -11,10 +11,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-
-  // Change this to get data from your table 
+  // Change this to get data from your table
   const { data } = await supabase.from('countries').select()
-
 
   res.status(200).json({ name: data })
 }
