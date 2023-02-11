@@ -10,10 +10,12 @@ type Data = {
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
+  
 ) {
   // Change this to get data from your table'
   //console.log(supabase)
-  const { data } = await supabase.from('tbl_temp').select('*')
+  const {wallet_address} = req.body
+  const { data } = await supabase.from('tbl_temp').insert(wallet_address)
 
   console.log(data)
 
