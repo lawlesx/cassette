@@ -10,12 +10,13 @@ const Test = () => {
       name: 'test',
       user_name: 'test_username6',
       profile_image: 'test_profile_image',
-      followers_count: 0,
-      online_status: true,
+      followers_count: 10,
+      online_status: false,
+      type: 'onlineStatus'
     }
     try{
-      axios.post('http://localhost:3000/api/createUser', body).then((res) => {
-        //console.log(res.data);
+      axios.post('http://localhost:3000/api/updateUserData', body).then((res) => {
+        console.log(res.data);
       })
     }catch(error){
       console.log(error)
