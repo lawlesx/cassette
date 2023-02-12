@@ -1317,6 +1317,16 @@
     "@typescript-eslint/types" "5.51.0"
     eslint-visitor-keys "^3.3.0"
 
+"@unlock-protocol/contracts@^0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@unlock-protocol/contracts/-/contracts-0.0.16.tgz#de45948c1339d6d2075e83dcff4a9de7558a95a3"
+  integrity sha512-pPfbGQYeaq+h68O5zWfICjcHRijkqqjYwylWKS+iEjWKEBFPvAWy4p9Z5hnsOWnsURY8xvXAeD7PTeouaRgfYA==
+
+"@unlock-protocol/networks@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@unlock-protocol/networks/-/networks-0.0.10.tgz#eeb17bbd78052664bec9596e67415a65202c5680"
+  integrity sha512-n3EFvRVIfl3R78bfNsWpdBedDJdBwzbul7RnRl4rKtXqRCqn/DY10zeO9VixrDCCcKed8Ft03YGFS2u1bqS2wQ==
+
 "@wagmi/chains@0.2.7":
   version "0.2.7"
   resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-0.2.7.tgz#07029a66ee5e86fbf699e8fd3b6163f11b8799d0"
@@ -5002,6 +5012,11 @@ react-dom@18.2.0:
   dependencies:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
+
+react-hook-form@^7.43.1:
+  version "7.43.1"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.43.1.tgz#0d0d7822f3f7fc05ffc41d5f012b49b90fcfa0f0"
+  integrity sha512-+s3+s8LLytRMriwwuSqeLStVjRXFGxgjjx2jED7Z+wz1J/88vpxieRQGvJVvzrzVxshZ0BRuocFERb779m2kNg==
 
 react-is@^16.13.1:
   version "16.13.1"
