@@ -5,7 +5,7 @@ import { WagmiConfig, createClient, configureChains } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
 import { polygonMumbai, polygon } from 'wagmi/chains'
 
-const { chains, provider, webSocketProvider } = configureChains(
+const { provider, webSocketProvider } = configureChains(
   [polygon, polygonMumbai],
   [publicProvider()],
 )
@@ -21,8 +21,6 @@ const livePeerClient = createReactClient({
 })
 
 const RootWrap: FC<{ children: ReactNode }> = ({ children }) => {
-  console.log('Supported Chains', chains);
-
   return (
     <WagmiConfig client={wagmiClient}>
       <LivepeerConfig client={livePeerClient}>
