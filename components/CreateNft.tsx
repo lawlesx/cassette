@@ -1,5 +1,5 @@
 'use client'
-import { PublicLockV11 } from '@unlock-protocol/contracts'
+import { PublicLockV11, UnlockV11 } from '@unlock-protocol/contracts'
 import { ethers } from 'ethers';
 import { useContractWrite, usePrepareContractWrite } from 'wagmi'
 
@@ -18,14 +18,14 @@ const CreateNft = () => {
     ]
   );
 
-  const { config } = usePrepareContractWrite({
+  const { config, error } = usePrepareContractWrite({
     address: '0x1FF7e338d5E582138C46044dc238543Ce555C963',
-    abi: PublicLockV11.abi,
+    abi: UnlockV11.abi,
     functionName: 'createUpgradeableLockAtVersion',
     args: [params, 11],
   })
   const { data, isLoading, isSuccess, write } = useContractWrite(config)
-  console.log(data, write)
+  console.log(error, data, write)
 
   return (
     <div className="w-1/2 p-10 rounded-xl">
