@@ -7,3 +7,25 @@
   margin: 0;
   padding: 0;
 }
+
+body::-webkit-scrollbar {
+  width: 12px;
+}
+
+body::-webkit-scrollbar-track {
+  background-color: none;
+}
+body::-webkit-scrollbar-thumb {
+  background-color: #ffffff12;
+  border-radius: 20px;
+  border: 3px solid #07030f;
+}
+
+.no-scroll-bar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+}
+
+.no-scroll-bar::-webkit-scrollbar {
+  display: none; /* Safari */
+}

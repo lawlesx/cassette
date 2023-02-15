@@ -1,5 +1,6 @@
 import './globals.css'
 import RootWrap from '@/components/RootWrap'
+import Navbar from '@/components/Navbar'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,7 +11,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       */}
       <head />
       <RootWrap>
-        <body className='bg-black'>{children}</body>
+        <body className='bg-background flex flex-col'>
+          <Navbar />
+          {children}</body>
       </RootWrap>
     </html>
   )

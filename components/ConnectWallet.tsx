@@ -1,11 +1,10 @@
 'use client'
 import useIsClient from '@/Hooks/useIsClient'
-import { useAccount, useConnect, useDisconnect, useEnsName } from 'wagmi'
+import { useAccount, useConnect, useDisconnect } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 
 const ConnectWallet = () => {
   const { address, isConnected } = useAccount()
-  const { data: ensName } = useEnsName({ address })
   const { connect } = useConnect({
     connector: new InjectedConnector(),
   })
@@ -29,7 +28,7 @@ const ConnectWallet = () => {
           Connect Wallet
         </button>
       ) : (
-        <h1 className="text-lg text-red-400">Connected to {ensName ?? address}</h1>
+        <h1 className="text-lg text-red-400">Connected to {address}</h1>
       )}
       <button onClick={() => disconnect()} className="bg-red-400 rounded-xl p-4 text-lg text-white font-medium">
         Disconnect
