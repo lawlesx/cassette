@@ -5,6 +5,6 @@ const Navbar = () => {
       <h1 className="text-4xl font-bold text-primary">Cassette</h1>
     </nav>
   )
-};
+}
 
-export default Navbar;
+export default Navbar

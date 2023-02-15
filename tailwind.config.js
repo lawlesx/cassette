@@ -17,6 +17,9 @@ module.exports = {
         primary: '#F2F0FF',
         secondary: '#A09CBC',
       },
+      fontFamily: {
+        sans: ['var(--font-gopher)', 'sans-serif'],
+      },
     },
   },
   plugins: [],
