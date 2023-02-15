@@ -29,3 +29,7 @@ body::-webkit-scrollbar-thumb {
 .no-scroll-bar::-webkit-scrollbar {
   display: none; /* Safari */
 }
+
+.input {
+  @apply bg-white bg-opacity-[0.12] rounded-lg py-2 px-3 placeholder:text-secondary placeholder:text-opacity-40 text-secondary text-lg font-normal focus:outline-none focus:border focus:border-secondary;
+}
