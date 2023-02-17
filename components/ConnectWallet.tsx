@@ -14,25 +14,25 @@ const ConnectWallet = () => {
 
   if (!isClient)
     return (
-      <div className="bg-red-900 rounded-3xl p-10 flex gap-4 items-center">
-        <button onClick={() => connect()} className="bg-red-400 rounded-xl p-4 text-lg text-white font-medium">
-          Connect Wallet
-        </button>
-      </div>
+      <button onClick={() => connect()} className="bg-red-400 rounded-xl p-4 text-lg text-white font-medium">
+        Connect Wallet
+      </button>
     )
 
   return (
-    <div className="bg-red-900 rounded-3xl p-10 flex gap-4 items-center">
+    <div className="flex gap-4 items-center">
       {!isConnected ? (
         <button onClick={() => connect()} className="bg-red-400 rounded-xl p-4 text-lg text-white font-medium">
           Connect Wallet
         </button>
       ) : (
-        <h1 className="text-lg text-red-400">Connected to {address}</h1>
+        <h1 className="text-lg w-40 truncate text-red-400">{address}</h1>
       )}
-      <button onClick={() => disconnect()} className="bg-red-400 rounded-xl p-4 text-lg text-white font-medium">
-        Disconnect
-      </button>
+      {isConnected && (
+        <button onClick={() => disconnect()} className="bg-red-400 rounded-xl p-4 text-lg text-white font-medium">
+          Disconnect
+        </button>
+      )}
     </div>
   )
 }
