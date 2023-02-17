@@ -10,12 +10,13 @@ const CreateNft = () => {
   const params = lockInterface.encodeFunctionData(
     "initialize(address,uint256,address,uint256,uint256,string)",
     [
-      "0x3D02B87ae906F1D6f130832f67E5c10C9f869205",
+      //* Should be factory address
+      contractAddress.cassetteUnlockFactory[80001],
       31 * 60 * 60 * 24, // 30 days in seconds
       ethers.constants.AddressZero, // We use the base chain currency
       ethers.utils.parseUnits("0.0001", 18), // 0.01 Eth
       1000,
-      "New Unlock Membership Testing",
+      "Trying New 17 Feb",
     ]
   );
 
@@ -31,7 +32,7 @@ const CreateNft = () => {
     address: contractAddress.cassetteUnlockFactory[80001],
     abi: CassetteUnlockFactory__factory.abi,
     functionName: 'deployLock',
-    args: ["0x3D02B87ae906F1D6f130832f67E5c10C9f869205", params as `0x${string}`, 'LOL Unlock Membership Testing', 'LOLUNLOCKTESTING', 'ipfs://bafybeifrnutuq4zdrzg7zyxwxk2qhvmybyvz43tg3h7bequ5ywd6ippgsi/'],
+    args: ["0x3D02B87ae906F1D6f130832f67E5c10C9f869205", params as `0x${string}`, "Trying New 17 Feb", "Trying New 17 Feb", 'ipfs://bafybeifrnutuq4zdrzg7zyxwxk2qhvmybyvz43tg3h7bequ5ywd6ippgsi/'],
   })
   const { data, isLoading, isSuccess, write } = useContractWrite(config)
   console.log('Data', data, write)
