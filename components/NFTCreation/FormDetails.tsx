@@ -1,25 +1,9 @@
-import { FC } from 'react'
-import Button from './Buttons/PrimaryButton'
-import CaretDownIcon from './Icons/CaretDownIcon'
-import UploadIcon from './Icons/UploadIcon'
-
-const NftCreationDetails = () => {
-  return (
-    <div className="flex justify-between items-start w-full">
-      <FormDetails />
-      <div className='flex items-end flex-col gap-10'>
-        <UploadImage />
-        <Button>Create NFT</Button>
-      </div>
-    </div>
-  )
-}
-
-export default NftCreationDetails
+import { FC } from "react"
+import CaretDownIcon from "../Icons/CaretDownIcon"
 
 const FormDetails = () => {
   return (
-    <div className="flex flex-col gap-12 w-[30rem]">
+    <div className="flex flex-col gap-12 w-[35rem]">
       <div className="flex flex-col gap-4">
         <FormTitle title="NFT Name" />
         <input className="input" placeholder="Mighty Ape" />
@@ -54,14 +38,7 @@ const FormDetails = () => {
   )
 }
 
-const UploadImage: FC = () => {
-  return (
-    <div className="border-2 border-white bg-white bg-opacity-10 w-[27rem] h-[35rem] flex flex-col items-center justify-center gap-4">
-      <UploadIcon className="w-24 h-24" />
-      <h1 className="text-primary text-3xl font-bold">Upload Image</h1>
-    </div>
-  )
-}
+export default FormDetails
 
 const FormTitle: FC<{ title: string }> = ({ title }) => {
   return <h1 className="text-primary text-lg font-medium">{title}</h1>

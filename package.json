@@ -32,7 +32,8 @@
     "react-hook-form": "^7.43.1",
     "typechain": "^8.1.1",
     "typescript": "4.9.5",
-    "wagmi": "^0.11.5"
+    "wagmi": "^0.11.5",
+    "yup": "^1.0.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.51.0",
