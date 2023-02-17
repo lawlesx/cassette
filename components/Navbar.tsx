@@ -1,6 +1,6 @@
 'use client'
 
-import ConnectWallet from "./ConnectWallet"
+import ConnectWallet from "./Buttons/ConnectWallet"
 
 const Navbar = () => {
   return (

@@ -1,10 +1,10 @@
-import CreateNft from "@/components/CreateNft";
+import NftCreationDetails from "@/components/NftCreationDetails";
+
 
 const Page = () => {
   return (
     <div className="px-20 py-12">
-      <CreateNft />
-      {/* <NftCreationDetails /> */}
+      <NftCreationDetails />
     </div>
   )
 };
