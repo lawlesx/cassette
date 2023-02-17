@@ -1,38 +1,14 @@
 'use client'
 import { FC } from 'react'
+import { useFormContext } from 'react-hook-form'
 import CaretDownIcon from '../Icons/CaretDownIcon'
-import * as yup from 'yup'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-
-const schema = yup.object({
-  name: yup.string().required(),
-  symbol: yup.string().required(),
-  price: yup.number().positive().required(),
-  quantity: yup.number().positive().integer().required(),
-  duration: yup.number().positive().integer().required(),
-})
-
-type FormData = yup.InferType<typeof schema>
 
 const FormDetails = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: yupResolver(schema),
-  })
-
-  console.log(errors);
-
-
-  const onSubmit = (data: FormData) => {
-    console.log(data)
-  }
+  const { register, formState: { errors } } = useFormContext()
+  console.log(errors)
 
   return (
-    <form className="flex flex-col gap-12 w-[35rem]" onSubmit={handleSubmit(onSubmit)}>
+    <div className="flex flex-col gap-12 w-[35rem]">
       <div className="flex flex-col gap-4">
         <FormTitle title="NFT Name" />
         <input className="input" placeholder="Mighty Ape" {...register("name")} />
@@ -63,8 +39,7 @@ const FormDetails = () => {
           </div>
         </div>
       </div>
-      <button type='submit' className='bg-white'>Next</button>
-    </form>
+    </div>
   )
 }
 

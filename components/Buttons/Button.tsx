@@ -1,9 +1,10 @@
 import { FC, MouseEventHandler, PropsWithChildren } from 'react'
 
-const Button: FC<PropsWithChildren<{ onClick?: MouseEventHandler }>> = ({ onClick, children }) => {
+const Button: FC<PropsWithChildren<{ onClick?: MouseEventHandler, type?: "submit" | "reset" | "button" }>> = ({ onClick, children, type = 'button' }) => {
   return (
     <div className='relative'>
       <button
+        type={type}
         className="bg-vibrant rounded-md p-4 text-3xl text-white font-bold tracking-wide relative w-[20rem] z-[1]"
         onClick={onClick}
       >
