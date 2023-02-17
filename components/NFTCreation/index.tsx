@@ -13,6 +13,7 @@ const schema = yup.object({
   quantity: yup.number().positive().integer().required(),
   duration: yup.number().positive().integer().required(),
   image: yup.string().required(),
+  durationUnit: yup.string().required(),
 }).required()
 
 type FormData = yup.InferType<typeof schema>
@@ -20,6 +21,9 @@ type FormData = yup.InferType<typeof schema>
 const NftCreation = () => {
   const methods = useForm<FormData>({
     resolver: yupResolver(schema),
+    defaultValues: {
+      durationUnit: 'Day(s)',
+    }
   })
 
   const onSubmit = (data: FormData) => {
