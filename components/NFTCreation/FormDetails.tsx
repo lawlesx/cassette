@@ -5,7 +5,7 @@ import CaretDownIcon from '../Icons/CaretDownIcon'
 
 const FormDetails = () => {
   const { register, formState: { errors } } = useFormContext()
-  console.log(errors)
+  console.table(errors)
 
   return (
     <div className="flex flex-col gap-12 w-[35rem]">

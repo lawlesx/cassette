@@ -12,6 +12,7 @@ const schema = yup.object({
   price: yup.number().positive().required(),
   quantity: yup.number().positive().integer().required(),
   duration: yup.number().positive().integer().required(),
+  image: yup.string().required(),
 }).required()
 
 type FormData = yup.InferType<typeof schema>
@@ -22,7 +23,7 @@ const NftCreation = () => {
   })
 
   const onSubmit = (data: FormData) => {
-    console.log(data)
+    console.table(data)
   }
 
 
