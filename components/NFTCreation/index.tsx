@@ -62,7 +62,7 @@ const NftCreation = () => {
     enabled: isValid,
   })
 
-  const { config, error, isError } = usePrepareContractWrite({
+  const { config } = usePrepareContractWrite({
     address: contractAddress.cassetteUnlockFactory[80001],
     abi: CassetteUnlockFactory__factory.abi,
     functionName: 'deployLock',
@@ -74,15 +74,13 @@ const NftCreation = () => {
       'ipfs://bafybeifrnutuq4zdrzg7zyxwxk2qhvmybyvz43tg3h7bequ5ywd6ippgsi/',
     ],
   })
-  console.log('IsError', isError, error)
 
-  const { data, isLoading, isSuccess, write } = useContractWrite(config)
+  const { data, isSuccess, write } = useContractWrite(config)
 
   const onSubmit = (data: FormData) => {
     console.log('lol', data)
     write?.()
   }
-  console.log('isValid', isValid);
 
   console.log('Data', data)
 
