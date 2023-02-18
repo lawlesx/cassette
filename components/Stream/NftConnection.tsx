@@ -3,6 +3,9 @@ import Button from '../Buttons/Button'
 import * as yup from 'yup'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { FC } from 'react'
+import { useAccount } from 'wagmi'
+import axios from 'axios'
 
 const schema = yup.object({
   address: yup.string().required(),
@@ -10,7 +13,13 @@ const schema = yup.object({
 
 type FormData = yup.InferType<typeof schema>
 
-const NftConnection = () => {
+interface Props {
+  streamKey: string
+  streamName: string
+}
+
+const NftConnection: FC<Props> = ({ streamKey, streamName }) => {
+  const { address } = useAccount()
   const {
     register,
     handleSubmit,
@@ -19,8 +28,18 @@ const NftConnection = () => {
     resolver: yupResolver(schema),
   })
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     console.log(data)
+    const body = {
+      stream_key: streamKey,
+      stream_name: streamName,
+      stream_url: `${process.env.NEXT_PUBLIC_HOST}/${streamKey}`,
+      streamer_wallet_address: address,
+      streamer_user_name: address,
+      nft_address: data.address,
+    }
+    const res = await axios.post('/api/createStream', body)
+    console.log(res.data)
   }
 
   return (
