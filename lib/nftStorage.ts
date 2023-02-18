@@ -74,7 +74,6 @@ const uploadNFTTokenMetadata = async ({
   description,
   count,
   animationUrl,
-  benefits,
 }: {
   file?: Blob
   imageUri?: string
@@ -82,7 +81,6 @@ const uploadNFTTokenMetadata = async ({
   description?: string
   count: number
   animationUrl?: string
-  benefits?: string[]
 }): Promise<CIDString> => {
   const nftStorage = new NFTStorage({
     token: NFT_STORAGE_API_KEY,
@@ -120,15 +118,12 @@ const uploadNFTTokenMetadata = async ({
       description: description,
       animation_url: animationUrl ?? '',
       image: imageUri,
-      attributes: benefits
-        ? [
-            { trait_type: 'Token', value: tokenId },
-            ...benefits.map((benefit) => ({
-              trait_type: 'Benefit',
-              value: benefit,
-            })),
-          ]
-        : undefined,
+      attributes: [
+        {
+          trait_type: 'Watch',
+          value: name,
+        },
+      ],
     }
     return new File([JSON.stringify(metadata)], tokenId.toString(), { type: 'application/json' })
   })
@@ -159,11 +154,10 @@ export interface StoreNftResult {
   imageUri: string
 }
 
-export const storeNft = async ({
+const storeNft = async ({
   name,
   description,
   file,
-  benefits,
   feeRecipient,
   membershipsCount,
   externalLink,
@@ -173,7 +167,6 @@ export const storeNft = async ({
     file,
     name,
     description,
-    benefits,
     count: membershipsCount,
     imageUri: `ipfs://${imageCID}`,
   })
@@ -191,40 +184,6 @@ export const storeNft = async ({
     nftTokenUri: tokenCID,
     contractUri: contractCID,
     imageUri: imageCID,
-  }
-}
-
-export const storeClaimLinkNft = async ({
-  file,
-  name,
-  description,
-  externalLink,
-  feeRecipient,
-  imageUrl,
-}: Omit<StoreNft, 'membershipsCount' | 'benefits'>): Promise<StoreNftResult> => {
-  const imageCID = await uploadFile({ file } as { file: Blob })
-  imageUrl = imageUrl || `ipfs://${imageCID}`
-  const tokenCID = await uploadNFTTokenMetadata({
-    imageUri: imageUrl,
-    name,
-    description,
-    count: 1,
-    file,
-  })
-  const contractCID = await uploadContractMetadata({
-    file,
-    imageUri: imageUrl,
-    feeRecipient,
-    name,
-    sellerFeeBasisPoints: 0,
-    description,
-    external_link: externalLink,
-  })
-
-  return {
-    nftTokenUri: `ipfs://${tokenCID}`,
-    contractUri: `ipfs://${contractCID}`,
-    imageUri: imageUrl,
   }
 }
 
