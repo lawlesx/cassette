@@ -1,6 +1,5 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { supabase } from '@/lib/supabaseClient'
-import { error } from 'console'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = {
@@ -15,63 +14,57 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   console.log(req.body)
 
-  const wallet_address  = req.body.wallet_address
   console.log('Wallet Address', req.body.wallet_addresss)
 
   const checkWalletAddress = await checkIfUserExist(req.body.wallet_addresss)
 
-  if(!checkWalletAddress){
+  if (!checkWalletAddress) {
     const userName = await checkUserNameAvailable(req.body.user_name)
-    if(!userName){
-      try{
+    if (!userName) {
+      try {
         const { data, error } = await supabase.from('tbl_creator').insert([req.body]).select()
-        if(data){
+        if (data) {
           res.status(200).json({ name: data, error: false })
         }
-        if(error){
+        if (error) {
           throw error
         }
-      }catch(error){
+      } catch (error) {
         console.log(error)
-        res.status(200).json({name:  null, error: true})
+        res.status(200).json({ name: null, error: true })
       }
-    }
-    else{
+    } else {
       console.log('UserName exists')
-        res.status(200).json({name:  'userNameError', error: true})
+      res.status(200).json({ name: 'userNameError', error: true })
     }
-  }
-  else{
-    console.log("Already exists")
-    res.status(200).json({name:  null, error: true})
+  } else {
+    console.log('Already exists')
+    res.status(200).json({ name: null, error: true })
   }
 }
 
 async function checkIfUserExist(wallet_address: any): Promise<boolean> {
-  try{
-    const{ data } = await supabase.from('tbl_creator').select().eq('wallet_addresss', wallet_address)
-  if(data?.toString() != ''){
-    return true
-  }
-  else{
-    return false
-  }
-  }catch(error){
+  try {
+    const { data } = await supabase.from('tbl_creator').select().eq('wallet_addresss', wallet_address)
+    if (data?.toString() != '') {
+      return true
+    } else {
+      return false
+    }
+  } catch (error) {
     return false
   }
 }
 
-async function checkUserNameAvailable(user_name:any): Promise<boolean> {
-
-  try{
-    const{ data } = await supabase.from('tbl_creator').select().eq('user_name', user_name)
-    if(data?.toString() != ''){
+async function checkUserNameAvailable(user_name: any): Promise<boolean> {
+  try {
+    const { data } = await supabase.from('tbl_creator').select().eq('user_name', user_name)
+    if (data?.toString() != '') {
       return true
-    }
-    else{
+    } else {
       return false
     }
-  }catch(error){
+  } catch (error) {
     return true
   }
 }

@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { supabase } from '@/lib/supabaseClient'
 import axios from 'axios'
-import { error } from 'console'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = {
@@ -13,11 +13,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   if (data) {
     try {
       const { data, error } = await supabase.from('tbl_watcher').insert([req.body]).select()
-      if(error){
+      if (error) {
         res.status(200).json({ name: null, error: true })
         throw error
-      }
-      else{
+      } else {
         res.status(200).json({ name: data, error: false })
       }
     } catch (error) {
@@ -41,8 +40,7 @@ async function updateNftTable(nft_address: any): Promise<boolean> {
         result = false
       } else if (res.data.name == 'success') {
         result = true
-      }
-      else{
+      } else {
         result = false
       }
     })
