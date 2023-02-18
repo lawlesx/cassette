@@ -7,3 +7,33 @@
   margin: 0;
   padding: 0;
 }
+
+body::-webkit-scrollbar {
+  width: 12px;
+}
+
+body::-webkit-scrollbar-track {
+  background-color: none;
+}
+body::-webkit-scrollbar-thumb {
+  background-color: #ffffff12;
+  border-radius: 20px;
+  border: 3px solid #07030f;
+}
+
+.no-scroll-bar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+}
+
+.no-scroll-bar::-webkit-scrollbar {
+  display: none; /* Safari */
+}
+
+.input {
+  @apply bg-white bg-opacity-[0.12] rounded-lg py-2 px-3 placeholder:text-secondary placeholder:text-opacity-40 text-secondary text-lg font-normal focus:outline-none focus:border focus:border-secondary;
+}
+
+.hover-effect {
+  @apply transition-colors duration-200 ease-[cubic-bezier(1,1,1,1)];
+}
