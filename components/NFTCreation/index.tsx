@@ -46,7 +46,7 @@ const NftCreation = () => {
         : data.durationUnit === 'Month(s)'
           ? data.duration * 30
           : data.duration * 30 * 12
-    const price = parseUnits(data.price.toString(), 'ether')
+    const price = parseUnits(String(data.price), 'ether')
     const lockInterface = new ethers.utils.Interface(PublicLockV12.abi)
     const _params = lockInterface.encodeFunctionData('initialize(address,uint256,address,uint256,uint256,string)', [
       //* Should be factory address

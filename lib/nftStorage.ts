@@ -38,7 +38,7 @@ const uploadContractMetadata = async ({
   if (!imageUri) {
     console.log('Note: imageUri was not provided. Hence uploading default image to IPFS')
 
-    const fileCID = uploadFile({ file })
+    const fileCID = uploadFile({ file } as { file: Blob })
 
     imageUri = `ipfs://${fileCID}`
 
@@ -92,7 +92,7 @@ const uploadNFTTokenMetadata = async ({
   if (!imageUri) {
     console.log('Note: imageUri was not provided. Hence uploading default image to IPFS')
 
-    const fileCID = uploadFile({ file })
+    const fileCID = uploadFile({ file } as { file: Blob })
 
     imageUri = `ipfs://${fileCID}`
 
@@ -112,7 +112,7 @@ const uploadNFTTokenMetadata = async ({
     return nftStorage.storeBlob(file)
   }
 
-  const files = [...Array(Number(count)).keys()].map((index) => {
+  const files = Array.from(Array(Number(count)).keys()).map((index) => {
     const tokenId = index + 1
     // Refer: https://docs.opensea.io/docs/metadata-standards
     const metadata = {
@@ -168,7 +168,7 @@ export const storeNft = async ({
   membershipsCount,
   externalLink,
 }: StoreNft): Promise<StoreNftResult> => {
-  const imageCID = await uploadFile({ file })
+  const imageCID = await uploadFile({ file } as { file: Blob })
   const tokenCID = await uploadNFTTokenMetadata({
     file,
     name,
@@ -202,7 +202,7 @@ export const storeClaimLinkNft = async ({
   feeRecipient,
   imageUrl,
 }: Omit<StoreNft, 'membershipsCount' | 'benefits'>): Promise<StoreNftResult> => {
-  const imageCID = await uploadFile({ file })
+  const imageCID = await uploadFile({ file } as { file: Blob })
   imageUrl = imageUrl || `ipfs://${imageCID}`
   const tokenCID = await uploadNFTTokenMetadata({
     imageUri: imageUrl,
