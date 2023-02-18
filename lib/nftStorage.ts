@@ -1,4 +1,3 @@
-import { Blob } from 'buffer'
 import { CIDString, File, NFTStorage } from 'nft.storage'
 
 const NFT_STORAGE_API_KEY = process.env.NEXT_PUBLIC_NFT_STORAGE_API_KEY as string
@@ -8,7 +7,7 @@ const uploadFile = async ({ file }: { file: Blob }): Promise<CIDString> => {
     token: NFT_STORAGE_API_KEY,
   })
 
-  const fileCID = await nftStorage.storeBlob(file as unknown as globalThis.Blob)
+  const fileCID = await nftStorage.storeBlob(file as globalThis.Blob)
   console.log('File uploaded to: ', `ipfs://${fileCID}`)
   return fileCID
 }
@@ -142,9 +141,8 @@ interface StoreNft {
   description?: string
   file?: Blob
   imageUrl?: string
-  benefits: string[]
   feeRecipient: string
-  membershipsCount: number
+  count: number
   externalLink: string
 }
 
@@ -159,7 +157,7 @@ const storeNft = async ({
   description,
   file,
   feeRecipient,
-  membershipsCount,
+  count,
   externalLink,
 }: StoreNft): Promise<StoreNftResult> => {
   const imageCID = await uploadFile({ file } as { file: Blob })
@@ -167,7 +165,7 @@ const storeNft = async ({
     file,
     name,
     description,
-    count: membershipsCount,
+    count,
     imageUri: `ipfs://${imageCID}`,
   })
   const contractCID = await uploadContractMetadata({

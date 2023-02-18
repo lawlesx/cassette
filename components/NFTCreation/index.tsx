@@ -11,8 +11,9 @@ import { PublicLockV12 } from '@unlock-protocol/contracts'
 import contractAddress from '@/utils/contract'
 import { useContractWrite, usePrepareContractWrite } from 'wagmi'
 import { CassetteUnlockFactory__factory } from '@/contracts/abis/types'
-import { } from 'react'
-import { useQuery } from 'react-query'
+import { useCallback, useRef } from 'react'
+import storeNft from '@/lib/nftStorage'
+import { useMutation } from 'react-query'
 
 const schema = yup
   .object({
@@ -36,9 +37,30 @@ const NftCreation = () => {
     },
   })
 
-  const { watch, formState: { isValid } } = methods
+  const param = useRef<`0x${string}`>(ethers.constants.AddressZero)
+  const nftTokenUri = useRef<string>('')
 
-  const { data: lockParams } = useQuery('lock-params', () => {
+  const {
+    watch,
+    formState: { isValid },
+  } = methods
+
+  const { config } = usePrepareContractWrite({
+    address: contractAddress.cassetteUnlockFactory[80001],
+    abi: CassetteUnlockFactory__factory.abi,
+    functionName: 'deployLock',
+    args: [
+      '0x3D02B87ae906F1D6f130832f67E5c10C9f869205',
+      param.current,
+      watch('name'),
+      watch('symbol'),
+      nftTokenUri.current,
+    ],
+  })
+
+  const { data, isSuccess, write } = useContractWrite(config)
+
+  const onPrepareMetadata = useCallback(async () => {
     const data = watch()
     const validity =
       data.durationUnit === 'Day(s)'
@@ -57,25 +79,21 @@ const NftCreation = () => {
       data.quantity,
       data.image,
     ])
-    return _params as `0x${string}`
-  }, {
-    enabled: isValid,
-  })
+    param.current = _params as `0x${string}`
 
-  const { config } = usePrepareContractWrite({
-    address: contractAddress.cassetteUnlockFactory[80001],
-    abi: CassetteUnlockFactory__factory.abi,
-    functionName: 'deployLock',
-    args: [
-      '0x3D02B87ae906F1D6f130832f67E5c10C9f869205',
-      lockParams as `0x${string}`,
-      watch('name'),
-      watch('symbol'),
-      'ipfs://bafybeifrnutuq4zdrzg7zyxwxk2qhvmybyvz43tg3h7bequ5ywd6ippgsi/',
-    ],
-  })
+    const { nftTokenUri: _nftTokenUri } = await storeNft({
+      name: data.name,
+      feeRecipient: '0x3D02B87ae906F1D6f130832f67E5c10C9f869205',
+      count: data.quantity,
+      //TODO: Change external link
+      externalLink: `https://cassette/nft/${data.name}`,
+      file: await fetch(data.image).then((res) => res.blob()),
+      description: `Watch ${data.name} Exclusively on Cassette`,
+    })
+    nftTokenUri.current = `ipfs://${_nftTokenUri}/`
+  }, [watch])
 
-  const { data, isSuccess, write } = useContractWrite(config)
+  const { mutate: mutateMetadata, isLoading } = useMutation('upload-metadata', onPrepareMetadata)
 
   const onSubmit = (data: FormData) => {
     console.log('lol', data)
@@ -86,14 +104,14 @@ const NftCreation = () => {
 
   return (
     <FormProvider {...methods}>
-      <form
-        className="flex justify-between items-start w-full"
-        onSubmit={methods.handleSubmit(onSubmit)}
-      >
+      <form className="flex justify-between items-start w-full" onSubmit={methods.handleSubmit(onSubmit)}>
         <FormDetails />
         <div className="flex items-end flex-col gap-10">
           <UploadImage />
-          <Button type="submit">{isSuccess ? 'Created' : 'Create NFT'}</Button>
+          {!write && <Button disabled={!isValid || isLoading} onClick={() => mutateMetadata()}>
+            {isLoading ? 'Uploading' : 'Prepare NFT metadata'}
+          </Button>}
+          <Button disabled={!write} type="submit">{isSuccess ? 'Created' : 'Create NFT'}</Button>
         </div>
       </form>
     </FormProvider>
