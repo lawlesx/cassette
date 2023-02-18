@@ -1,8 +1,6 @@
 'use client'
-import Head from "@/app/head";
 import axios from "axios";
 import { useEffect } from "react";
-import { json } from "stream/consumers";
 
 const Test = () => {
   // useEffect(() => {
@@ -22,7 +20,7 @@ const Test = () => {
   //   }catch(error){
   //     console.log(error)
   //   }
-   
+
   // }, []);
 
 
@@ -40,15 +38,15 @@ const Test = () => {
     //   nft_count: 1
     // }
     const body = {
-      wallet_address : '0x123',
-      bought_nft_address : 'testAddress1',
-      token_id : 1
+      wallet_address: '0x123',
+      bought_nft_address: 'testAddress1',
+      token_id: 1
     }
-    try{
+    try {
       axios.post('http://localhost:3000/api/buyNft', body).then((res) => {
-          console.log(res.data);
-        })
-    }catch(error){
+        console.log(res.data);
+      })
+    } catch (error) {
       console.log(error)
     }
   }, []);
