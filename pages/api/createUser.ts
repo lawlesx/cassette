@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  name: any
+  data: any
   error: any
 }
 
@@ -24,22 +24,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       try {
         const { data, error } = await supabase.from('tbl_creator').insert([req.body]).select()
         if (data) {
-          res.status(200).json({ name: data, error: false })
+          res.status(200).json({ data: data[0], error: false })
         }
         if (error) {
           throw error
         }
       } catch (error) {
         console.log(error)
-        res.status(200).json({ name: null, error: true })
+        res.status(200).json({ data: null, error: true })
       }
     } else {
       console.log('UserName exists')
-      res.status(200).json({ name: 'userNameError', error: true })
+      res.status(200).json({ data: 'userNameError', error: true })
     }
   } else {
     console.log('Already exists')
-    res.status(200).json({ name: null, error: true })
+    res.status(200).json({ data: null, error: true })
   }
 }
 
