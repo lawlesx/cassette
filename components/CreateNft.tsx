@@ -20,20 +20,14 @@ const CreateNft = () => {
     ]
   );
 
-  // const contract = useContract({
-  //   address: contractAddress.cassetteUnlockFactory[80001],
-  //   abi: CassetteUnlockFactory__factory.abi,
-  // })
-
-  // contract?.deployLock()
-  console.log('Params', params);
-
-  const { config } = usePrepareContractWrite({
+  const { config, isError } = usePrepareContractWrite({
     address: contractAddress.cassetteUnlockFactory[80001],
     abi: CassetteUnlockFactory__factory.abi,
     functionName: 'deployLock',
     args: ["0x3D02B87ae906F1D6f130832f67E5c10C9f869205", params as `0x${string}`, "Trying New 17 Feb", "Trying New 17 Feb", 'ipfs://bafybeifrnutuq4zdrzg7zyxwxk2qhvmybyvz43tg3h7bequ5ywd6ippgsi/'],
   })
+  console.log('IsError', isError);
+
   const { data, isLoading, isSuccess, write } = useContractWrite(config)
   console.log('Data', data, write)
 

@@ -4,6 +4,7 @@ import { createReactClient, LivepeerConfig, studioProvider } from '@livepeer/rea
 import { WagmiConfig, createClient, configureChains } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
 import { polygonMumbai, polygon } from 'wagmi/chains'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
 const { provider, webSocketProvider } = configureChains(
   [polygon, polygonMumbai],
@@ -20,11 +21,15 @@ const livePeerClient = createReactClient({
   provider: studioProvider({ apiKey: process.env.NEXT_PUBLIC_LIVEPEER_STUDIO_API_KEY as string }),
 })
 
+const queryClient = new QueryClient()
+
 const RootWrap: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <WagmiConfig client={wagmiClient}>
       <LivepeerConfig client={livePeerClient}>
-        {children}
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
       </LivepeerConfig>
     </WagmiConfig>
   )
