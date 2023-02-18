@@ -14,6 +14,7 @@ import { CassetteUnlockFactory__factory } from '@/contracts/abis/types'
 import { useCallback, useRef } from 'react'
 import storeNft from '@/lib/nftStorage'
 import { useMutation } from 'react-query'
+import { SECONDS_PER_DAY } from '@/helpers/constants'
 
 const schema = yup
   .object({
@@ -64,10 +65,10 @@ const NftCreation = () => {
     const data = watch()
     const validity =
       data.durationUnit === 'Day(s)'
-        ? data.duration
+        ? data.duration * SECONDS_PER_DAY
         : data.durationUnit === 'Month(s)'
-          ? data.duration * 30
-          : data.duration * 30 * 12
+          ? data.duration * 30 * SECONDS_PER_DAY
+          : data.duration * 30 * 12 * SECONDS_PER_DAY
     const price = parseUnits(String(data.price), 'ether')
     const lockInterface = new ethers.utils.Interface(PublicLockV12.abi)
     const _params = lockInterface.encodeFunctionData('initialize(address,uint256,address,uint256,uint256,string)', [
