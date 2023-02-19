@@ -1,5 +1,6 @@
-import Button from '@/components/Buttons/Button'
 import CopyIcon from '@/components/Icons/CopyIcon'
+import BuyNft from '@/components/Stream/BuyNft'
+import VerifyNft from '@/components/Stream/VerifyNft'
 import axios from 'axios'
 
 interface Stream {
@@ -41,7 +42,7 @@ const Page = async ({ params }: { params: { key: string } }) => {
         </div>
         <div className="flex flex-col gap-2">
           <h1 className="highlight-pill w-min">Username</h1>
-          <p className="text-secondary text-lg font-medium">{stream.streamer_user_name ?? 'Username not found'}</p>
+          <p className="text-secondary text-lg font-medium w-3/4 truncate">{stream.streamer_user_name ?? 'Username not found'}</p>
         </div>
         <div className="flex flex-col gap-2">
           <h1 className="highlight-pill w-max">NFT Address</h1>
@@ -50,12 +51,9 @@ const Page = async ({ params }: { params: { key: string } }) => {
           </div>
         </div>
         <div className="w-full h-1 rounded-full bg-vibrant my-4" />
-        <div className="flex flex-col gap-3">
-          <p className="text-primary text-lg font-medium">Verify your nft to get access to stream</p>
-          <button className="bg-teal rounded-lg p-3 text-lg text-white active:bg-opacity-80">Verify</button>
-        </div>
+        <VerifyNft nftAddress={stream.nft_address} />
         <p className='text-xl font-bold w-full text-center text-sky-400'>OR</p>
-        <Button>Buy NFT</Button>
+        <BuyNft />
       </div>
     </div>
   )
