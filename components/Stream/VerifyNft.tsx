@@ -1,10 +1,10 @@
 'use client'
 import axios from 'axios'
-import { FC } from 'react'
+import { Dispatch, FC, SetStateAction } from 'react'
 import { toast } from 'react-hot-toast'
 import { useAccount } from 'wagmi'
 
-const VerifyNft: FC<{ nftAddress: string }> = ({ nftAddress }) => {
+const VerifyNft: FC<{ nftAddress: string, setIsVerified: Dispatch<SetStateAction<boolean>> }> = ({ nftAddress, setIsVerified }) => {
   const { address: userAddress } = useAccount()
   const handleVerify = async () => {
     if (!userAddress) return toast.error('Connect wallet first')
@@ -18,6 +18,7 @@ const VerifyNft: FC<{ nftAddress: string }> = ({ nftAddress }) => {
     if (data.isHolderOfCollection) {
       console.log('Verified')
       toast.success('NFT detected in wallet')
+      setIsVerified(true)
     }
     else {
       console.log('Not verified')
