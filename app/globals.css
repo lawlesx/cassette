@@ -34,6 +34,10 @@ body::-webkit-scrollbar-thumb {
   @apply bg-white bg-opacity-[0.12] rounded-lg py-2 px-3 placeholder:text-secondary placeholder:text-opacity-40 text-secondary text-lg font-normal focus:outline-none focus:border focus:border-secondary;
 }
 
+.highlight-pill {
+  @apply bg-teal bg-opacity-40 rounded-lg px-3 py-2 text-lg text-primary;
+}
+
 .hover-effect {
   @apply transition-colors duration-200 ease-[cubic-bezier(1,1,1,1)];
 }

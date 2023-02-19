@@ -44,13 +44,13 @@ export const Stream = () => {
           <div className="flex flex-col items-center gap-10 w-full">
             <div className="flex items-center w-full justify-between px-28 gap-20">
               <div className="flex items-center gap-2">
-                <h1 className="bg-teal bg-opacity-40 rounded-lg px-3 py-2 text-primary">Ingest URL</h1>
+                <h1 className="highlight-pill">Ingest URL</h1>
                 <h1 className="text-lg text-secondary font-normal flex items-center gap-2">
                   {stream.rtmpIngestUrl} <CopyIcon />
                 </h1>
               </div>
               <div className="flex items-center gap-2">
-                <h1 className="bg-teal bg-opacity-40 rounded-lg px-3 py-2 text-primary">Stream Key</h1>
+                <h1 className="highlight-pill">Stream Key</h1>
                 <h1 className="text-lg text-secondary font-normal flex items-center gap-2">
                   {stream.streamKey} <CopyIcon />
                 </h1>
