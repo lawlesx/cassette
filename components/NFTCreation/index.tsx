@@ -76,7 +76,7 @@ const NftCreation = () => {
       console.log(lock, deployer, owner)
       const data = watch()
       const body = {
-        nft_address: lock,
+        nft_address: lock.toLowerCase(),
         mint_price: data.price,
         nft_quantity: data.quantity,
         nft_title: data.name,
