@@ -7,8 +7,11 @@ type Data = {
   error: any
 }
 
-//fetch user data based on stream key
-//pass stream key as params
+/**
+ * @deprecated use supabaseinstead
+ * @param req { stream_key: string }
+ * @param res stream data based on stream key
+ */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   if (req.method !== 'GET') {
     res.status(405).json({ data: 'methodNotAllowed', error: true })

@@ -23,6 +23,12 @@ const Page = async ({ params }: { params: { key: string } }) => {
   const stream = await getStream(key)
   console.log('Stream', stream)
 
+  if (!stream) return (
+    <div className='w-full flex items-center justify-center h-40'>
+      <h1 className='text-4xl text-primary text-center'>Stream not found</h1>
+    </div>
+  )
+
   return (
     <div className="w-full p-8 flex gap-4 items-start justify-between">
       {/* <Preview streamKey={stream.stream_key} streamName={stream.stream_name} playbackId={stream.playback_id} /> */}

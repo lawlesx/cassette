@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 import axios from 'axios'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { useQuery } from 'react-query'
 import Button from '../Buttons/Button'
 import { usePrepareContractWrite, useContractWrite, useAccount } from 'wagmi'
@@ -24,7 +24,7 @@ interface FetchNFt {
 const BuyNft: FC<{ nftAddress: string }> = ({ nftAddress }) => {
   const { address } = useAccount()
   const { data: nftData } = useQuery<{ data: FetchNFt; error: boolean }>(
-    'fetch-nft',
+    ['fetch-nft', nftAddress],
     async () => {
       const res = await axios.get('/api/fetchNft', {
         params: { nft_address: nftAddress },
@@ -33,12 +33,12 @@ const BuyNft: FC<{ nftAddress: string }> = ({ nftAddress }) => {
     },
     {
       enabled: !!nftAddress,
-      staleTime: 2000 * 60 * 5,
-      cacheTime: 2000 * 60 * 5,
     }
   )
 
   console.log('NFT data', nftData)
+
+  if (!nftData?.data) return <h1 className="text-xl text-teal font-medium w-full text-center">Loading...</h1>
 
   const image = !nftData?.error ? `https://ipfs.io/ipfs/${nftData?.data.nft_image_uri.slice(7)}` : ''
 
@@ -74,11 +74,16 @@ interface BuyLogicProps {
 }
 
 const BuyLogic: FC<BuyLogicProps> = ({ nftAddress, nftPrice, userAddress }) => {
+  console.table({ nftAddress, nftPrice, userAddress });
+
   const { config, error } = usePrepareContractWrite({
     address: nftAddress as `0x${string}`,
     abi: PublicLockV12.abi,
     functionName: 'purchase',
     args: [[parseEther(String(nftPrice))], [userAddress], [userAddress], [ethers.constants.AddressZero], [ethers.constants.HashZero]],
+    overrides: {
+      value: parseEther(String(nftPrice))
+    }
   })
 
   const { data, write } = useContractWrite({
@@ -87,6 +92,10 @@ const BuyLogic: FC<BuyLogicProps> = ({ nftAddress, nftPrice, userAddress }) => {
       console.log(data, variables, context)
     },
   })
+  useEffect(() => {
+    console.log('Buy logic', data, error);
+  }, [data, error])
+
 
   console.log('Buy logic', data, error);
 
