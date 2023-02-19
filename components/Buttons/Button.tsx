@@ -4,10 +4,10 @@ const Button: FC<
   PropsWithChildren<{ onClick?: MouseEventHandler; type?: 'submit' | 'reset' | 'button'; disabled?: boolean }>
 > = ({ onClick, children, type = 'button', disabled }) => {
   return (
-    <div className="relative">
+    <div className="relative min-w-[20rem]">
       <button
         type={type}
-        className={`rounded-md p-4 text-3xl text-white font-bold tracking-wide relative min-w-[20rem] z-[1] ${disabled ? 'cursor-not-allowed bg-secondary' : 'cursor-pointer bg-vibrant'
+        className={`rounded-md p-4 text-3xl text-white font-bold tracking-wide relative w-full z-[1] ${disabled ? 'cursor-not-allowed bg-secondary' : 'cursor-pointer bg-vibrant'
           }`}
         onClick={onClick}
       >
