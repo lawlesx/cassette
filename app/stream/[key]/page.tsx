@@ -1,4 +1,4 @@
-import CopyIcon from '@/components/Icons/CopyIcon'
+import Copy from '@/components/Copy'
 import BuyNft from '@/components/Stream/BuyNft'
 import VerifyNft from '@/components/Stream/VerifyNft'
 import axios from 'axios'
@@ -47,7 +47,7 @@ const Page = async ({ params }: { params: { key: string } }) => {
         <div className="flex flex-col gap-2">
           <h1 className="highlight-pill w-max">NFT Address</h1>
           <div className="flex items-center gap-2">
-            <p className="text-secondary text-lg font-medium w-3/4 truncate">{stream.nft_address}</p> <CopyIcon />
+            <p className="text-secondary text-lg font-medium w-3/4 truncate">{stream.nft_address}</p> <Copy text={stream.nft_address} />
           </div>
         </div>
         <div className="w-full h-1 rounded-full bg-vibrant my-4" />

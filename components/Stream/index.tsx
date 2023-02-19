@@ -1,7 +1,7 @@
 'use client'
 import { Player, useCreateStream } from '@livepeer/react'
 import { useMemo, useState } from 'react'
-import CopyIcon from '../Icons/CopyIcon'
+import Copy from '../Copy'
 import NftConnection from './NftConnection'
 
 export const Stream = () => {
@@ -46,13 +46,13 @@ export const Stream = () => {
               <div className="flex items-center gap-2">
                 <h1 className="highlight-pill">Ingest URL</h1>
                 <h1 className="text-lg text-secondary font-normal flex items-center gap-2">
-                  {stream.rtmpIngestUrl} <CopyIcon />
+                  {stream.rtmpIngestUrl} <Copy text={stream.rtmpIngestUrl} />
                 </h1>
               </div>
               <div className="flex items-center gap-2">
                 <h1 className="highlight-pill">Stream Key</h1>
                 <h1 className="text-lg text-secondary font-normal flex items-center gap-2">
-                  {stream.streamKey} <CopyIcon />
+                  {stream.streamKey} <Copy text={stream.streamKey} />
                 </h1>
               </div>
             </div>
