@@ -1,7 +1,7 @@
 import Copy from '@/components/Copy'
 import BuyNft from '@/components/Stream/BuyNft'
 import VerifyNft from '@/components/Stream/VerifyNft'
-import axios from 'axios'
+import { supabase } from '@/lib/supabaseClient'
 
 interface Stream {
   stream_key: string
@@ -14,12 +14,8 @@ interface Stream {
 }
 
 const getStream = async (key: string): Promise<Stream> => {
-  const res = await axios.get(`${process.env.NEXT_PUBLIC_HOST}/api/fetchStream`, {
-    params: {
-      stream_key: key,
-    },
-  })
-  return res.data.data
+  const { data } = await supabase.from('tbl_stream').select().eq('stream_key', key)
+  return data?.[0]
 }
 
 const Page = async ({ params }: { params: { key: string } }) => {
