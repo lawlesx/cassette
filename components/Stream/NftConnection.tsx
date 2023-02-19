@@ -6,6 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { FC } from 'react'
 import { useAccount } from 'wagmi'
 import axios from 'axios'
+import { useRouter } from 'next/navigation';
 
 const schema = yup.object({
   address: yup.string().required(),
@@ -28,6 +29,8 @@ const NftConnection: FC<Props> = ({ streamKey, streamName }) => {
     resolver: yupResolver(schema),
   })
 
+  const router = useRouter()
+
   const onSubmit = async (data: FormData) => {
     console.log(data)
     const body = {
@@ -40,6 +43,10 @@ const NftConnection: FC<Props> = ({ streamKey, streamName }) => {
     }
     const res = await axios.post('/api/createStream', body)
     console.log(res.data)
+
+    if (!res.data.error) {
+      router.push(`/stream/${streamKey}`)
+    }
   }
 
   return (
