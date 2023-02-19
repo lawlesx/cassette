@@ -5,6 +5,8 @@ import { WagmiConfig, createClient, configureChains } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
 import { polygonMumbai, polygon } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { Toaster } from 'react-hot-toast';
+import useIsClient from '@/Hooks/useIsClient'
 
 const { provider, webSocketProvider } = configureChains(
   [polygon, polygonMumbai],
@@ -24,11 +26,13 @@ const livePeerClient = createReactClient({
 const queryClient = new QueryClient()
 
 const RootWrap: FC<{ children: ReactNode }> = ({ children }) => {
+  const isClient = useIsClient()
   return (
     <WagmiConfig client={wagmiClient}>
       <LivepeerConfig client={livePeerClient}>
         <QueryClientProvider client={queryClient}>
           {children}
+          <>{isClient && <Toaster />}</>
         </QueryClientProvider>
       </LivepeerConfig>
     </WagmiConfig>
