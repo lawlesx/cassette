@@ -44,6 +44,7 @@ const NftCreation = () => {
 
   const { address: userAddress } = useAccount()
 
+  const [nftAddress, setNftAddress] = useState<string>()
   const [isCreatingNft, setisCreatingNft] = useState(false)
   const param = useRef<`0x${string}`>(ethers.constants.AddressZero)
   const nftTokenUri = useRef<string>('')
@@ -60,11 +61,16 @@ const NftCreation = () => {
     functionName: 'deployLock',
     args: [userAddress as `0x${string}`, param.current, watch('name'), watch('symbol'), nftTokenUri.current],
   })
-  const { data: executionData, isSuccess, write } = useContractWrite({
+  const {
+    data: executionData,
+    isSuccess,
+    write,
+  } = useContractWrite({
     ...config,
-    onSuccess: () => toast('Creating NFT', {
-      icon: '🔥',
-    }),
+    onSuccess: () =>
+      toast('Creating NFT', {
+        icon: '🔥',
+      }),
     onError: () => toast.error('Something went wrong. Please try again later.'),
   })
 
@@ -89,6 +95,7 @@ const NftCreation = () => {
       if (!res.data.error) {
         setisCreatingNft(false)
         toast.success('NFT created successfully')
+        setNftAddress(lock.toLowerCase())
       }
       console.log(res.data)
     },
@@ -148,34 +155,36 @@ const NftCreation = () => {
 
   return (
     <FormProvider {...methods}>
-      <form className="flex justify-between items-start w-full" onSubmit={methods.handleSubmit(onSubmit)}>
-        <FormDetails />
-        <div className="flex items-end flex-col gap-10">
-          <UploadImage />
-          {!write && (
-            <Button disabled={!isValid || isLoading} onClick={() => mutateMetadata()}>
-              {isLoading ? 'Uploading' : 'Prepare NFT metadata'}
+      {!nftAddress ? (
+        <form className="flex justify-between items-start w-full" onSubmit={methods.handleSubmit(onSubmit)}>
+          <FormDetails />
+          <div className="flex items-end flex-col gap-10">
+            <UploadImage />
+            {!write && (
+              <Button disabled={!isValid || isLoading} onClick={() => mutateMetadata()}>
+                {isLoading ? 'Uploading' : 'Prepare NFT metadata'}
+              </Button>
+            )}
+            <Button disabled={!write} type="submit">
+              {isSuccess ? (isCreatingNft ? 'Creating' : 'Created') : 'Create NFT'}
             </Button>
-          )}
-          <Button disabled={!write} type="submit">
-            {isSuccess ? (isCreatingNft ? 'Creating' : 'Created') : 'Create NFT'}
-          </Button>
-          {executionData && (
-            <div className="flex items-center justify-end gap-2">
-              <h1 className="highlight-pill w-max">Txn Hash</h1>
-              <Link
-                href={`https://mumbai.polygonscan.com/tx/${executionData.hash}`}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 text-secondary text-lg font-medium w-2/5 truncate"
-              >
-                {executionData.hash}
-              </Link>
-              <Copy text={executionData.hash} />
-            </div>
-          )}
-        </div>
-      </form>
+            {executionData && (
+              <div className="flex items-center justify-end gap-2">
+                <h1 className="highlight-pill w-max">Txn Hash</h1>
+                <Link
+                  href={`https://mumbai.polygonscan.com/tx/${executionData.hash}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 text-secondary text-lg font-medium w-2/5 truncate"
+                >
+                  {executionData.hash}
+                </Link>
+                <Copy text={executionData.hash} />
+              </div>
+            )}
+          </div>
+        </form>
+      ) : <h1 className="text-xl text-teal font-medium w-full text-center">NFT Address: {nftAddress}</h1>}
     </FormProvider>
   )
 }
