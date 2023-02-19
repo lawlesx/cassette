@@ -1,6 +1,16 @@
 import axios from "axios";
 
-const getStream = async (key: string) => {
+interface Stream {
+  stream_key: string;
+  stream_name: string;
+  stream_url: string;
+  streamer_wallet_address: string;
+  streamer_user_name: string;
+  nft_address: string;
+  playback_id: string;
+}
+
+const getStream = async (key: string): Promise<Stream> => {
 
   const res = await axios.get(`${process.env.NEXT_PUBLIC_HOST}/api/fetchStream`, {
     params: {
@@ -17,10 +27,9 @@ const Page = async ({ params }: { params: { key: string } }) => {
   const stream = await getStream(key);
   console.log('Stream', stream);
 
-  // console.log(key);
 
-  return <div className="w-full h-screen">
-    <h1 className="text-2xl font-bold text-primary">Stream</h1>
+  return <div className="w-full min-h-screen">
+    <div></div>
   </div>
 };
 

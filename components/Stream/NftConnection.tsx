@@ -17,9 +17,10 @@ type FormData = yup.InferType<typeof schema>
 interface Props {
   streamKey: string
   streamName: string
+  playbackId: string
 }
 
-const NftConnection: FC<Props> = ({ streamKey, streamName }) => {
+const NftConnection: FC<Props> = ({ streamKey, streamName, playbackId }) => {
   const { address } = useAccount()
   const {
     register,
@@ -40,6 +41,7 @@ const NftConnection: FC<Props> = ({ streamKey, streamName }) => {
       streamer_wallet_address: address,
       streamer_user_name: address,
       nft_address: data.address,
+      playback_id: playbackId,
     }
     const res = await axios.post('/api/createStream', body)
     console.log(res.data)

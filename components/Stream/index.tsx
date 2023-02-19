@@ -59,7 +59,7 @@ export const Stream = () => {
             <div className="border border-teal w-3/4">
               {stream.playbackId && <Player title={stream.name} playbackId={stream.playbackId} autoPlay muted />}
             </div>
-            <NftConnection streamKey={stream.streamKey} streamName={streamName} />
+            <NftConnection streamKey={stream.streamKey} streamName={streamName} playbackId={stream.playbackId} />
           </div>
         )
       )}
