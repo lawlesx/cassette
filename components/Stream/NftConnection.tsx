@@ -7,6 +7,7 @@ import { FC } from 'react'
 import { useAccount } from 'wagmi'
 import axios from 'axios'
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast'
 
 const schema = yup.object({
   address: yup.string().required(),
@@ -33,6 +34,7 @@ const NftConnection: FC<Props> = ({ streamKey, streamName, playbackId }) => {
   const router = useRouter()
 
   const onSubmit = async (data: FormData) => {
+    toast('Creating stream...', { icon: '🔥' })
     console.log(data)
     const body = {
       stream_key: streamKey,
@@ -48,6 +50,8 @@ const NftConnection: FC<Props> = ({ streamKey, streamName, playbackId }) => {
 
     if (!res.data.error) {
       router.push(`/stream/${streamKey}`)
+    } else {
+      toast.error('Something went wrong. Please try again later.')
     }
   }
 

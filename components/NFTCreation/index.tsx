@@ -60,8 +60,13 @@ const NftCreation = () => {
     functionName: 'deployLock',
     args: [userAddress as `0x${string}`, param.current, watch('name'), watch('symbol'), nftTokenUri.current],
   })
-
-  const { data: executionData, isSuccess, write } = useContractWrite(config)
+  const { data: executionData, isSuccess, write } = useContractWrite({
+    ...config,
+    onSuccess: () => toast('Creating NFT', {
+      icon: '🔥',
+    }),
+    onError: () => toast.error('Something went wrong. Please try again later.'),
+  })
 
   useContractEvent({
     address: contractAddress.cassetteUnlockFactory[80001],
@@ -139,9 +144,6 @@ const NftCreation = () => {
       return
     }
     write()
-    toast('Creating NFT', {
-      icon: '🔥',
-    })
   }
 
   return (

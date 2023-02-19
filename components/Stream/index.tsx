@@ -42,6 +42,7 @@ export const Stream = () => {
       ) : (
         stream.rtmpIngestUrl && (
           <div className="flex flex-col items-center gap-10 w-full">
+            <h1 className='text-lg text-primary font-medium'>Use the Stream Key or Ingest URL to setup stream in OBS studio or any similar app</h1>
             <div className="flex items-center w-full justify-between px-28 gap-20">
               <div className="flex items-center gap-2">
                 <h1 className="highlight-pill">Ingest URL</h1>

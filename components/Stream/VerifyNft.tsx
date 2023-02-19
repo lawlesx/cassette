@@ -7,7 +7,8 @@ import { useAccount } from 'wagmi'
 const VerifyNft: FC<{ nftAddress: string }> = ({ nftAddress }) => {
   const { address: userAddress } = useAccount()
   const handleVerify = async () => {
-    console.log('verify');
+    if (!userAddress) return toast.error('Connect wallet first')
+
     console.table({ nftAddress, userAddress })
     const { data } = await axios.get<{ isHolderOfCollection: boolean }>(`https://polygon-mumbai.g.alchemy.com/nft/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}/isHolderOfCollection`, {
       params: { wallet: userAddress, contractAddress: nftAddress },
