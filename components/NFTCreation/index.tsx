@@ -16,6 +16,9 @@ import storeNft from '@/lib/nftStorage'
 import { useMutation } from 'react-query'
 import { SECONDS_PER_DAY } from '@/helpers/constants'
 import axios from 'axios'
+import { toast } from 'react-hot-toast'
+import Link from 'next/link'
+import Copy from '../Copy'
 
 const schema = yup
   .object({
@@ -55,16 +58,10 @@ const NftCreation = () => {
     address: contractAddress.cassetteUnlockFactory[80001],
     abi: CassetteUnlockFactory__factory.abi,
     functionName: 'deployLock',
-    args: [
-      userAddress as `0x${string}`,
-      param.current,
-      watch('name'),
-      watch('symbol'),
-      nftTokenUri.current,
-    ],
+    args: [userAddress as `0x${string}`, param.current, watch('name'), watch('symbol'), nftTokenUri.current],
   })
 
-  const { data, isSuccess, write } = useContractWrite(config)
+  const { data: executionData, isSuccess, write } = useContractWrite(config)
 
   useContractEvent({
     address: contractAddress.cassetteUnlockFactory[80001],
@@ -86,9 +83,9 @@ const NftCreation = () => {
       const res = await axios.post('/api/createNft', body)
       if (!res.data.error) {
         setisCreatingNft(false)
+        toast.success('NFT created successfully')
       }
-      console.log(res.data);
-
+      console.log(res.data)
     },
   })
 
@@ -126,15 +123,26 @@ const NftCreation = () => {
     nftImageUri.current = `ipfs://${_imageUri}`
   }, [watch])
 
-  const { mutate: mutateMetadata, isLoading } = useMutation('upload-metadata', onPrepareMetadata)
+  const { mutate: mutateMetadata, isLoading } = useMutation('upload-metadata', () =>
+    toast.promise(onPrepareMetadata(), {
+      loading: 'Uploading Metadata...',
+      success: <b>Metadata Uploaded</b>,
+      error: <b>Could Upload Metadata</b>,
+    })
+  )
 
   const onSubmit = (data: FormData) => {
     console.log('lol', data)
     setisCreatingNft(true)
-    write?.()
+    if (!write) {
+      toast.error('Please prepare NFT metadata or Connect your wallet')
+      return
+    }
+    write()
+    toast('Creating NFT', {
+      icon: '🔥',
+    })
   }
-
-  console.log('Data', data)
 
   return (
     <FormProvider {...methods}>
@@ -142,10 +150,28 @@ const NftCreation = () => {
         <FormDetails />
         <div className="flex items-end flex-col gap-10">
           <UploadImage />
-          {!write && <Button disabled={!isValid || isLoading} onClick={() => mutateMetadata()}>
-            {isLoading ? 'Uploading' : 'Prepare NFT metadata'}
-          </Button>}
-          <Button disabled={!write} type="submit">{isSuccess ? isCreatingNft ? 'Creating' : 'Created' : 'Create NFT'}</Button>
+          {!write && (
+            <Button disabled={!isValid || isLoading} onClick={() => mutateMetadata()}>
+              {isLoading ? 'Uploading' : 'Prepare NFT metadata'}
+            </Button>
+          )}
+          <Button disabled={!write} type="submit">
+            {isSuccess ? (isCreatingNft ? 'Creating' : 'Created') : 'Create NFT'}
+          </Button>
+          {executionData && (
+            <div className="flex items-center justify-end gap-2">
+              <h1 className="highlight-pill w-max">Txn Hash</h1>
+              <Link
+                href={`https://mumbai.polygonscan.com/tx/${executionData.hash}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 text-secondary text-lg font-medium w-2/5 truncate"
+              >
+                {executionData.hash}
+              </Link>
+              <Copy text={executionData.hash} />
+            </div>
+          )}
         </div>
       </form>
     </FormProvider>

@@ -53,7 +53,7 @@ const Page = async ({ params }: { params: { key: string } }) => {
         <div className="w-full h-1 rounded-full bg-vibrant my-4" />
         <VerifyNft nftAddress={stream.nft_address} />
         <p className='text-xl font-bold w-full text-center text-sky-400'>OR</p>
-        <BuyNft />
+        <BuyNft nftAddress={stream.nft_address} />
       </div>
     </div>
   )

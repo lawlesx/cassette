@@ -16,11 +16,11 @@ const VerifyNft: FC<{ nftAddress: string }> = ({ nftAddress }) => {
     console.log('NFT holder', data);
     if (data.isHolderOfCollection) {
       console.log('Verified')
-      toast.success('Verification Success')
+      toast.success('NFT detected in wallet')
     }
     else {
       console.log('Not verified')
-      toast.error('Verification Failed')
+      toast.error('NFT not detected in wallet')
     }
   }
 
