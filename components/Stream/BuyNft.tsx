@@ -39,16 +39,16 @@ const BuyNft: FC<{ nftAddress: string }> = ({ nftAddress }) => {
 
   console.log('NFT data', nftData)
 
-  if (!nftData?.data) return <h1 className="text-xl text-teal font-medium w-full text-center">Loading...</h1>
-
-  const image = !nftData?.error ? `https://ipfs.io/ipfs/${nftData?.data.nft_image_uri.slice(7)}` : ''
-
-  if (nftData?.error)
+  if (nftData?.error || (!nftData?.data && !nftData?.error))
     return (
       <h1 className="text-xl text-teal font-medium w-full text-center">
         NFT not listed on <span className="text-primary font-bold">Cassette</span>
       </h1>
     )
+
+  if (!nftData?.data) return <h1 className="text-xl text-teal font-medium w-full text-center">Loading...</h1>
+
+  const image = !nftData?.error ? `https://ipfs.io/ipfs/${nftData?.data.nft_image_uri.slice(7)}` : ''
 
   return (
     <div className="w-full flex flex-col gap-4">
