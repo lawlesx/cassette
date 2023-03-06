@@ -34,7 +34,7 @@ const FormDetails = () => {
         <div className="relative">
           <input className="input w-full" placeholder="E.g. 0.001" {...register('price')} />
           <p className="absolute top-0 right-0 text-primary h-full text-lg font-medium bg-white bg-opacity-[0.12] px-3 py-2 rounded-r-lg">
-            MATIC
+            SOL
           </p>
         </div>
       </div>

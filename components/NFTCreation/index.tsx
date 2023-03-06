@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 import Button from '../Buttons/Button'
 import FormDetails from './FormDetails'
@@ -9,8 +8,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useCallback, useRef, useState } from 'react'
 import storeNft from '@/lib/nftStorage'
 import { useMutation } from 'react-query'
-import { SECONDS_PER_DAY } from '@/helpers/constants'
 import { toast } from 'react-hot-toast'
+import { Metaplex, walletAdapterIdentity, } from "@metaplex-foundation/js";
+import { Connection, clusterApiUrl } from "@solana/web3.js";
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const schema = yup
   .object({
@@ -34,10 +35,13 @@ const NftCreation = () => {
     },
   })
 
+  const connection = new Connection(clusterApiUrl("devnet"));
+
+  const wallet = useWallet()
+  const metaplex = Metaplex.make(connection).use(walletAdapterIdentity(wallet));
 
   const [nftAddress, setNftAddress] = useState<string>()
-  const [isCreatingNft, setisCreatingNft] = useState(false)
-  const param = useRef<`0x${string}`>('0x')
+  // const param = useRef<`0x${string}`>('0x')
   const nftTokenUri = useRef<string>('')
   const nftImageUri = useRef<string>('')
 
@@ -48,24 +52,23 @@ const NftCreation = () => {
 
   const onPrepareMetadata = useCallback(async () => {
     const data = watch()
-    const validity =
-      data.durationUnit === 'Day(s)'
-        ? data.duration * SECONDS_PER_DAY
-        : data.durationUnit === 'Month(s)'
-          ? data.duration * 30 * SECONDS_PER_DAY
-          : data.duration * 30 * 12 * SECONDS_PER_DAY
+    // const validity =
+    //   data.durationUnit === 'Day(s)'
+    //     ? data.duration * SECONDS_PER_DAY
+    //     : data.durationUnit === 'Month(s)'
+    //       ? data.duration * 30 * SECONDS_PER_DAY
+    //       : data.duration * 30 * 12 * SECONDS_PER_DAY
 
     const { nftTokenUri: _nftTokenUri, imageUri: _imageUri } = await storeNft({
       name: data.name,
-      feeRecipient: '0x3D02B87ae906F1D6f130832f67E5c10C9f869205',
       count: data.quantity,
       //TODO: Change external link
-      externalLink: `https://cassette/nft/${data.name}`,
+      externalLink: `https://cassette-phi.vercel.app/nft`,
       file: await fetch(data.image).then((res) => res.blob()),
       description: `Watch ${data.name} Exclusively on Cassette`,
     })
-    nftTokenUri.current = `ipfs://${_nftTokenUri}/`
-    nftImageUri.current = `ipfs://${_imageUri}`
+    nftTokenUri.current = `https://ipfs.io/ipfs/${_nftTokenUri}`
+    nftImageUri.current = `https://ipfs.io/ipfs/${_imageUri}`
   }, [watch])
 
   const { mutate: mutateMetadata, isLoading } = useMutation('upload-metadata', () =>
@@ -76,13 +79,23 @@ const NftCreation = () => {
     })
   )
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     console.log('lol', data)
-    setisCreatingNft(true)
-    // if (!write) {
-    //   toast.error('Please prepare NFT metadata or Connect your wallet')
-    //   return
-    // }
+    const uri = nftTokenUri.current.replace("ipfs://", "https://ipfs.io/ipfs/")
+    console.log(uri);
+
+    const mintObject = await toast.promise(metaplex.nfts().create({
+      name: data.name,
+      sellerFeeBasisPoints: 1000,
+      symbol: data.symbol,
+      uri,
+
+    }), {
+      loading: 'Creating NFT...',
+      success: <b>NFT Created</b>,
+      error: <b>Could not create NFT</b>,
+    })
+    setNftAddress(mintObject.mintAddress?.toString())
   }
 
   return (
@@ -92,13 +105,12 @@ const NftCreation = () => {
           <FormDetails />
           <div className="flex items-end flex-col gap-10">
             <UploadImage />
-            {false && (
+            {true && (
               <Button disabled={!isValid || isLoading} onClick={() => mutateMetadata()}>
                 {isLoading ? 'Uploading' : 'Prepare NFT metadata'}
               </Button>
             )}
             <Button type="submit">
-              {/* {isSuccess ? (isCreatingNft ? 'Creating' : 'Created') : 'Create NFT'} */}
               Create NFT
             </Button>
             {/* {executionData && (

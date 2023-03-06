@@ -15,19 +15,15 @@ const uploadFile = async ({ file }: { file: Blob }): Promise<CIDString> => {
 const uploadContractMetadata = async ({
   file,
   imageUri,
-  feeRecipient,
   name,
   description,
   external_link,
-  sellerFeeBasisPoints,
 }: {
   file?: Blob
   imageUri?: string
-  feeRecipient: string
   name: string
   description?: string
   external_link?: string
-  sellerFeeBasisPoints: number
 }): Promise<CIDString> => {
   const nftStorage = new NFTStorage({
     token: NFT_STORAGE_API_KEY,
@@ -44,18 +40,12 @@ const uploadContractMetadata = async ({
     console.log('Image uploaded to: ', imageUri)
   }
 
-  if (!feeRecipient) {
-    throw new Error('feeRecipient not provided')
-  }
-
   // Refer: https://docs.metaplex.com/programs/token-metadata/token-standard#the-non-fungible-standard
   const metadata = {
     name,
     description,
     image: imageUri, // Collection image
     external_url: external_link, // This has to be a valid URL
-    seller_fee_basis_points: sellerFeeBasisPoints, // Shows up on the "Creator Fees"
-    // fee_recipient: feeRecipient,
   }
 
   const metadataFile = new File([JSON.stringify(metadata)], 'metadata.json', { type: 'application/json' })
@@ -96,40 +86,25 @@ const uploadNFTTokenMetadata = async ({
     console.log('Image uploaded to: ', imageUri)
   }
 
-  // This means probably for ERC721 token
-  if (count === 1) {
-    const metadata = {
-      name,
-      description: description,
-      animation_url: animationUrl ?? '',
-      image: imageUri,
-    }
-    const file = new File([JSON.stringify(metadata)], name, { type: 'application/json' })
-
-    return nftStorage.storeBlob(file)
+  // Refer: https://docs.metaplex.com/programs/token-metadata/token-standard#the-non-fungible-standard
+  const metadata = {
+    name,
+    description,
+    animation_url: animationUrl ?? '',
+    image: imageUri,
+    attributes: [
+      {
+        trait_type: 'Watch',
+        value: name,
+      },
+    ],
   }
 
-  const files = Array.from(Array(Number(count)).keys()).map((index) => {
-    const tokenId = index + 1
-    // Refer: https://docs.opensea.io/docs/metadata-standards
-    const metadata = {
-      name: `${name} #${tokenId}`,
-      description: description,
-      animation_url: animationUrl ?? '',
-      image: imageUri,
-      attributes: [
-        {
-          trait_type: 'Watch',
-          value: name,
-        },
-      ],
-    }
-    return new File([JSON.stringify(metadata)], tokenId.toString(), { type: 'application/json' })
-  })
+  const files = new File([JSON.stringify(metadata)], name, { type: 'application/json' })
 
   console.log(files)
 
-  const CID = count === 1 ? await nftStorage.storeBlob(files[0]) : await nftStorage.storeDirectory(files)
+  const CID = await nftStorage.storeBlob(files)
 
   console.log(`Uploaded ${count} tokens' metadata to: ipfs://${CID}/`)
 
@@ -141,7 +116,6 @@ interface StoreNft {
   description?: string
   file?: Blob
   imageUrl?: string
-  feeRecipient: string
   count: number
   externalLink: string
 }
@@ -156,7 +130,7 @@ const storeNft = async ({
   name,
   description,
   file,
-  feeRecipient,
+
   count,
   externalLink,
 }: StoreNft): Promise<StoreNftResult> => {
@@ -166,14 +140,12 @@ const storeNft = async ({
     name,
     description,
     count,
-    imageUri: `ipfs://${imageCID}`,
+    imageUri: `https://ipfs.io/ipfs/${imageCID}`,
   })
   const contractCID = await uploadContractMetadata({
     file,
-    imageUri: `ipfs://${imageCID}`,
-    feeRecipient,
+    imageUri: `https://ipfs.io/ipfs/${imageCID}`,
     name,
-    sellerFeeBasisPoints: 1000,
     description,
     external_link: externalLink,
   })
