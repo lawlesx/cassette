@@ -1,12 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from 'next/link'
 import Button from '../Buttons/Button'
 import * as yup from 'yup'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { FC } from 'react'
-import { useAccount } from 'wagmi'
-import axios from 'axios'
-import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast'
 
 const schema = yup.object({
@@ -22,7 +20,6 @@ interface Props {
 }
 
 const NftConnection: FC<Props> = ({ streamKey, streamName, playbackId }) => {
-  const { address } = useAccount()
   const {
     register,
     handleSubmit,
@@ -31,28 +28,28 @@ const NftConnection: FC<Props> = ({ streamKey, streamName, playbackId }) => {
     resolver: yupResolver(schema),
   })
 
-  const router = useRouter()
+  // const router = useRouter()
 
   const onSubmit = async (data: FormData) => {
     toast('Creating stream...', { icon: '🔥' })
     console.log(data)
-    const body = {
-      stream_key: streamKey,
-      stream_name: streamName,
-      stream_url: `${process.env.NEXT_PUBLIC_HOST}/${streamKey}`,
-      streamer_wallet_address: address,
-      streamer_user_name: address,
-      nft_address: data.address,
-      playback_id: playbackId,
-    }
-    const res = await axios.post('/api/createStream', body)
-    console.log(res.data)
+    // const body = {
+    //   stream_key: streamKey,
+    //   stream_name: streamName,
+    //   stream_url: `${process.env.NEXT_PUBLIC_HOST}/${streamKey}`,
+    //   streamer_wallet_address: address,
+    //   streamer_user_name: address,
+    //   nft_address: data.address,
+    //   playback_id: playbackId,
+    // }
+    // const res = await axios.post('/api/createStream', body)
+    // console.log(res.data)
 
-    if (!res.data.error) {
-      router.push(`/stream/${streamKey}`)
-    } else {
-      toast.error('Something went wrong. Please try again later.')
-    }
+    // if (!res.data.error) {
+    //   router.push(`/stream/${streamKey}`)
+    // } else {
+    //   toast.error('Something went wrong. Please try again later.')
+    // }
   }
 
   return (

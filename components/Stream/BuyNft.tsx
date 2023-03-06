@@ -1,14 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 import axios from 'axios'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { useQuery } from 'react-query'
 import Button from '../Buttons/Button'
-import { usePrepareContractWrite, useContractWrite, useAccount } from 'wagmi'
-import { PublicLockV12 } from '@unlock-protocol/contracts'
-import { ethers } from 'ethers'
-import { parseEther } from 'ethers/lib/utils.js'
-import { toast } from 'react-hot-toast'
 
 interface FetchNFt {
   mint_price: number
@@ -23,7 +18,9 @@ interface FetchNFt {
 }
 
 const BuyNft: FC<{ nftAddress: string }> = ({ nftAddress }) => {
-  const { address } = useAccount()
+
+  const address = '0x8c8b2b8c1b0f1f2f3c3c4c5c6c7c8c9c0c1c2c3c'
+
   const { data: nftData } = useQuery<{ data: FetchNFt; error: boolean }>(
     ['fetch-nft', nftAddress],
     async () => {
@@ -77,40 +74,16 @@ interface BuyLogicProps {
 }
 
 const BuyLogic: FC<BuyLogicProps> = ({ nftAddress, nftPrice, userAddress }) => {
+  const [isSuccess, setIsSuccess] = useState(false)
+
   console.table({ nftAddress, nftPrice, userAddress })
-
-  const { config, error } = usePrepareContractWrite({
-    address: nftAddress as `0x${string}`,
-    abi: PublicLockV12.abi,
-    functionName: 'purchase',
-    args: [
-      [parseEther(String(nftPrice))],
-      [userAddress],
-      [userAddress],
-      [ethers.constants.AddressZero],
-      [ethers.constants.HashZero],
-    ],
-    overrides: {
-      value: parseEther(String(nftPrice)),
-    },
-  })
-
-  const { data, write, isSuccess } = useContractWrite({
-    ...config,
-    onSuccess(data, variables, context) {
-      console.log(data, variables, context)
-      toast.success('NFT Bought!')
-    },
-  })
-
-  console.log('Buy logic', data, error)
 
   return (
     <>
       {isSuccess ? (
         <h1 className="text-xl text-teal font-medium w-full text-center">NFT Bought! Click on Verify</h1>
       ) : (
-        <Button onClick={() => write?.()}>Buy NFT</Button>
+        <Button onClick={() => setIsSuccess(true)}>Buy NFT</Button>
       )}
     </>
   )
