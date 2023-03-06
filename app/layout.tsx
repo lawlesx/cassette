@@ -48,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       */}
       <head />
       <RootWrap>
-        <body className='flex flex-col'>
+        <body className='flex flex-col relative'>
           <Navbar />
           {children}</body>
       </RootWrap>
