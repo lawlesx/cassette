@@ -49,7 +49,7 @@ const RootWrap: FC<{ children: ReactNode }> = ({ children }) => {
   );
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets}>
+      <WalletProvider wallets={wallets} autoConnect={true}>
         <WalletModalProvider>
           <LivepeerConfig client={livePeerClient}>
             <QueryClientProvider client={queryClient}>

@@ -48,14 +48,14 @@ const uploadContractMetadata = async ({
     throw new Error('feeRecipient not provided')
   }
 
-  // Refer: https://docs.opensea.io/docs/contract-level-metadata
+  // Refer: https://docs.metaplex.com/programs/token-metadata/token-standard#the-non-fungible-standard
   const metadata = {
     name,
     description,
-    image: imageUri, // Collection image on OpenSea collection page
-    external_link, // This has to be a valid URL to show up on OpenSea
-    seller_fee_basis_points: sellerFeeBasisPoints, // Shows up on the "Creator Fees" section of each token on OpenSea
-    fee_recipient: feeRecipient, // Default configured as the OpenSea royalty fee collector address
+    image: imageUri, // Collection image
+    external_url: external_link, // This has to be a valid URL
+    seller_fee_basis_points: sellerFeeBasisPoints, // Shows up on the "Creator Fees"
+    // fee_recipient: feeRecipient,
   }
 
   const metadataFile = new File([JSON.stringify(metadata)], 'metadata.json', { type: 'application/json' })
