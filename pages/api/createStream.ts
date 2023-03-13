@@ -17,12 +17,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   if (!checkStreamExists) {
     try {
-      const { data, error } = await supabase.from('tbl_stream').insert([req.body]).select()
-      if (data) {
-        res.status(200).json({ data: data[0], error: false })
-      }
-      if (error) {
-        throw error
+      const publicUrl = await uploadThumnail(req)
+      if (publicUrl) {
+        const urlData = {
+          thumbnail_url: publicUrl,
+        }
+        req.body = {
+          ...urlData,
+        }
+        const { data, error } = await supabase.from('tbl_stream').insert([req.body]).select()
+        if (data) {
+          res.status(200).json({ data: data[0], error: false })
+        }
+        if (error) {
+          throw error
+        }
       }
     } catch (error) {
       console.log(error)
@@ -44,5 +53,23 @@ async function checkStreamKey(stream_key: any): Promise<boolean> {
     }
   } catch (error) {
     return false
+  }
+}
+
+async function uploadThumnail(req: NextApiRequest): Promise<string> {
+  try {
+    const { data } = await supabase.storage
+      .from('stream-thumbnails')
+      .upload(req.body.stream_key + '/' + req.body.file.name, req.body.file as File)
+    if (data) {
+      const { data } = await supabase.storage
+        .from('stream-thumbnails')
+        .getPublicUrl(req.body.stream_key + '/' + req.body.file.name)
+      return data.publicUrl
+    } else {
+      return ''
+    }
+  } catch (error) {
+    return ''
   }
 }
