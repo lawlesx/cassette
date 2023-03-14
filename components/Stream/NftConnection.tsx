@@ -6,6 +6,9 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { FC } from 'react'
 import { toast } from 'react-hot-toast'
+import axios from 'axios'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { useRouter } from 'next/navigation';
 
 const schema = yup.object({
   address: yup.string().required(),
@@ -20,6 +23,8 @@ interface Props {
 }
 
 const NftConnection: FC<Props> = ({ streamKey, streamName, playbackId }) => {
+  const router = useRouter()
+
   const {
     register,
     handleSubmit,
@@ -28,28 +33,32 @@ const NftConnection: FC<Props> = ({ streamKey, streamName, playbackId }) => {
     resolver: yupResolver(schema),
   })
 
-  // const router = useRouter()
+  const { publicKey } = useWallet()
 
   const onSubmit = async (data: FormData) => {
     toast('Creating stream...', { icon: '🔥' })
     console.log(data)
-    // const body = {
-    //   stream_key: streamKey,
-    //   stream_name: streamName,
-    //   stream_url: `${process.env.NEXT_PUBLIC_HOST}/${streamKey}`,
-    //   streamer_wallet_address: address,
-    //   streamer_user_name: address,
-    //   nft_address: data.address,
-    //   playback_id: playbackId,
-    // }
-    // const res = await axios.post('/api/createStream', body)
-    // console.log(res.data)
+    if (!publicKey) return toast.error('Please connect your wallet first.')
+    const address = publicKey.toString()
+    const body = {
+      stream_key: streamKey,
+      stream_name: streamName,
+      stream_url: `${process.env.NEXT_PUBLIC_HOST}/${streamKey}`,
+      streamer_wallet_address: address,
+      streamer_user_name: address,
+      nft_address: data.address,
+      playback_id: playbackId,
+      //TODO: Add file upload
+      // file: '', // As File
+    }
+    const res = await axios.post('/api/createStream', body)
+    console.log('Created Stream data', res.data)
 
-    // if (!res.data.error) {
-    //   router.push(`/stream/${streamKey}`)
-    // } else {
-    //   toast.error('Something went wrong. Please try again later.')
-    // }
+    if (!res.data.error) {
+      router.push(`/stream/${streamKey}`)
+    } else {
+      toast.error('Something went wrong. Please try again later.')
+    }
   }
 
   return (
