@@ -1,7 +1,6 @@
 'use client'
-import { FC, MouseEventHandler, useState } from 'react'
+import { FC, MouseEventHandler } from 'react'
 import { useFormContext } from 'react-hook-form'
-import CaretDownIcon from '../Icons/CaretDownIcon'
 
 export enum DurationUnitOptions {
   Days = "Day(s)",
@@ -13,11 +12,9 @@ const FormDetails = () => {
   const {
     register,
     formState: { errors },
-    setValue,
-    watch,
   } = useFormContext()
   console.table(errors)
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  // const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   return (
     <div className="flex flex-col gap-12 w-[35rem]">
@@ -38,7 +35,7 @@ const FormDetails = () => {
           </p>
         </div>
       </div>
-      <div className="flex flex-col gap-4">
+      {/* <div className="flex flex-col gap-4">
         <FormTitle title="NFT validity duration" />
         <div className="relative">
           <input className="input w-full" placeholder="E.g. 15" {...register('duration')} />
@@ -52,7 +49,7 @@ const FormDetails = () => {
             {isDropdownOpen ? <Dropdown items={Object.values(DurationUnitOptions)} setItem={(item) => setValue('durationUnit', item)} /> : <>{watch('durationUnit')} <CaretDownIcon /></>}
           </button>
         </div>
-      </div>
+      </div> */}
       <div className="flex flex-col gap-4">
         <FormTitle title="Quantity" />
         <input className="input" placeholder="E.g. 1500" {...register('quantity')} />
@@ -67,6 +64,7 @@ const FormTitle: FC<{ title: string }> = ({ title }) => {
   return <h1 className="text-primary text-lg font-medium">{title}</h1>
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Dropdown: FC<{ items: string[], setItem: (item: string) => void }> = ({ items, setItem }) => {
   return (
     <div className="absolute top-0 right-0 w-full bg-white bg-opacity-10 backdrop-blur-lg rounded-b-md rounded-tr-md">

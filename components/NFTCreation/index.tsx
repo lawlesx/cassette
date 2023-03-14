@@ -12,6 +12,7 @@ import { toast } from 'react-hot-toast'
 import { Metaplex, walletAdapterIdentity, } from "@metaplex-foundation/js";
 import { Connection, clusterApiUrl } from "@solana/web3.js";
 import { useWallet } from '@solana/wallet-adapter-react';
+import Copy from '../Copy'
 
 const schema = yup
   .object({
@@ -19,7 +20,7 @@ const schema = yup
     symbol: yup.string().required(),
     price: yup.number().positive().required(),
     quantity: yup.number().positive().integer().required(),
-    duration: yup.number().positive().integer().required(),
+    // duration: yup.number().positive().integer().required(),
     image: yup.string().required(),
     durationUnit: yup.string().required(),
   })
@@ -71,31 +72,36 @@ const NftCreation = () => {
     nftImageUri.current = `https://ipfs.io/ipfs/${_imageUri}`
   }, [watch])
 
-  const { mutate: mutateMetadata, isLoading } = useMutation('upload-metadata', () =>
+  const { mutate: createNft, isLoading, isSuccess } = useMutation('create-nft', () =>
     toast.promise(onPrepareMetadata(), {
       loading: 'Uploading Metadata...',
       success: <b>Metadata Uploaded</b>,
       error: <b>Could Upload Metadata</b>,
-    })
+    }),
+    {
+      onSuccess: async () => {
+        const data = watch()
+        console.log('lol', data)
+        const uri = nftTokenUri.current.replace("ipfs://", "https://ipfs.io/ipfs/")
+        console.log(uri);
+
+        const mintObject = await toast.promise(metaplex.nfts().create({
+          name: data.name,
+          sellerFeeBasisPoints: 1000,
+          symbol: data.symbol,
+          uri,
+        }), {
+          loading: 'Creating NFT...',
+          success: <b>NFT Created</b>,
+          error: <b>Could not create NFT</b>,
+        })
+        setNftAddress(mintObject.mintAddress?.toString())
+      }
+    }
   )
 
-  const onSubmit = async (data: FormData) => {
-    console.log('lol', data)
-    const uri = nftTokenUri.current.replace("ipfs://", "https://ipfs.io/ipfs/")
-    console.log(uri);
-
-    const mintObject = await toast.promise(metaplex.nfts().create({
-      name: data.name,
-      sellerFeeBasisPoints: 1000,
-      symbol: data.symbol,
-      uri,
-
-    }), {
-      loading: 'Creating NFT...',
-      success: <b>NFT Created</b>,
-      error: <b>Could not create NFT</b>,
-    })
-    setNftAddress(mintObject.mintAddress?.toString())
+  const onSubmit = async () => {
+    createNft()
   }
 
   return (
@@ -105,12 +111,12 @@ const NftCreation = () => {
           <FormDetails />
           <div className="flex items-end flex-col gap-10">
             <UploadImage />
-            {true && (
+            {/* {true && (
               <Button disabled={!isValid || isLoading} onClick={() => mutateMetadata()}>
                 {isLoading ? 'Uploading' : 'Prepare NFT metadata'}
               </Button>
-            )}
-            <Button type="submit">
+            )} */}
+            <Button type="submit" disabled={!isValid || isLoading || isSuccess}>
               Create NFT
             </Button>
             {/* {executionData && (
@@ -130,7 +136,10 @@ const NftCreation = () => {
           </div>
         </form>
       ) : (
-        <h1 className="text-xl text-teal font-medium w-full text-center">NFT Address: {nftAddress}</h1>
+        <div className='flex items-center justify-center gap-2'>
+          <h1 className="text-xl text-teal font-medium max-w-max truncate text-center">NFT Address: {nftAddress}</h1>
+          <Copy text={nftAddress as string} />
+        </div>
       )}
     </FormProvider>
   )
