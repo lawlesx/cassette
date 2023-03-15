@@ -1,5 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
+import useMetaplex from '@/Hooks/useMetaplex'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { PublicKey } from '@solana/web3.js'
 import axios from 'axios'
 import { FC, useState } from 'react'
 import { useQuery } from 'react-query'
@@ -18,8 +21,9 @@ interface FetchNFt {
 }
 
 const BuyNft: FC<{ nftAddress: string }> = ({ nftAddress }) => {
+  const { publicKey } = useWallet()
 
-  const address = '0x8c8b2b8c1b0f1f2f3c3c4c5c6c7c8c9c0c1c2c3c'
+  const address = publicKey?.toString()
 
   const { data: nftData } = useQuery<{ data: FetchNFt; error: boolean }>(
     ['fetch-nft', nftAddress],
@@ -45,7 +49,7 @@ const BuyNft: FC<{ nftAddress: string }> = ({ nftAddress }) => {
 
   if (!nftData?.data) return <h1 className="text-xl text-teal font-medium w-full text-center">Loading...</h1>
 
-  const image = !nftData?.error ? `https://ipfs.io/ipfs/${nftData?.data.nft_image_uri.slice(7)}` : ''
+  const image = !nftData?.error ? nftData.data.nft_image_uri : ''
 
   return (
     <div className="w-full flex flex-col gap-4">
@@ -74,16 +78,28 @@ interface BuyLogicProps {
 }
 
 const BuyLogic: FC<BuyLogicProps> = ({ nftAddress, nftPrice, userAddress }) => {
+  const metaplex = useMetaplex()
   const [isSuccess, setIsSuccess] = useState(false)
 
   console.table({ nftAddress, nftPrice, userAddress })
+  const onBuy = async () => {
+    const mintedNft = await metaplex.nfts().mint({
+      nftOrSft: {
+        address: new PublicKey(nftAddress),
+        tokenStandard: 0,
+      },
+      toOwner: new PublicKey(userAddress),
+    })
+    console.log('Minted NFT', mintedNft)
+    setIsSuccess(true)
+  }
 
   return (
     <>
       {isSuccess ? (
         <h1 className="text-xl text-teal font-medium w-full text-center">NFT Bought! Click on Verify</h1>
       ) : (
-        <Button onClick={() => setIsSuccess(true)}>Buy NFT</Button>
+        <Button onClick={onBuy}>Buy NFT</Button>
       )}
     </>
   )

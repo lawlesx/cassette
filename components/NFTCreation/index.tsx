@@ -11,6 +11,9 @@ import { useMutation } from 'react-query'
 import { toast } from 'react-hot-toast'
 import Copy from '../Copy'
 import useMetaplex from '@/Hooks/useMetaplex'
+import { useWallet } from '@solana/wallet-adapter-react'
+import axios from 'axios'
+import { toBigNumber } from '@metaplex-foundation/js'
 
 const schema = yup
   .object({
@@ -33,6 +36,9 @@ const NftCreation = () => {
       durationUnit: 'Day(s)',
     },
   })
+
+  const { publicKey } = useWallet()
+  const userAddress = publicKey?.toString()
 
   const metaplex = useMetaplex()
 
@@ -85,12 +91,29 @@ const NftCreation = () => {
           sellerFeeBasisPoints: 1000,
           symbol: data.symbol,
           uri,
+          maxSupply: toBigNumber(data.quantity),
         }), {
           loading: 'Creating NFT...',
           success: <b>NFT Created</b>,
           error: <b>Could not create NFT</b>,
         })
-        setNftAddress(mintObject.mintAddress?.toString())
+
+        const body = {
+          nft_address: mintObject.mintAddress?.toString(),
+          mint_price: data.price,
+          nft_quantity: data.quantity,
+          nft_title: data.name,
+          nft_image_uri: nftImageUri.current,
+          nft_symbol: data.symbol,
+          nft_owner_address: userAddress,
+          nft_sold_count: 0,
+        }
+        const res = await axios.post('/api/createNft', body)
+        if (!res.data.error) {
+          toast.success('NFT created successfully')
+          setNftAddress(mintObject.mintAddress?.toString())
+        }
+        console.log(res.data)
       }
     }
   )

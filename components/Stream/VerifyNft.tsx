@@ -17,6 +17,8 @@ const VerifyNft: FC<{ nftAddress: string, setIsVerified: Dispatch<SetStateAction
 
     console.table({ nftAddress, userAddress })
     const nft = await metaplex.nfts().findByMint({ mintAddress: nftPublicKey })
+    console.log('NFT', nft);
+
 
     if (nft.creators[0]?.address.toString() === publicKey?.toString()) {
       console.log('Verified')
