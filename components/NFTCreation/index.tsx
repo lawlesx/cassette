@@ -9,10 +9,8 @@ import { useCallback, useRef, useState } from 'react'
 import storeNft from '@/lib/nftStorage'
 import { useMutation } from 'react-query'
 import { toast } from 'react-hot-toast'
-import { Metaplex, walletAdapterIdentity, } from "@metaplex-foundation/js";
-import { Connection, clusterApiUrl } from "@solana/web3.js";
-import { useWallet } from '@solana/wallet-adapter-react';
 import Copy from '../Copy'
+import useMetaplex from '@/Hooks/useMetaplex'
 
 const schema = yup
   .object({
@@ -36,10 +34,7 @@ const NftCreation = () => {
     },
   })
 
-  const connection = new Connection(clusterApiUrl("devnet"));
-
-  const wallet = useWallet()
-  const metaplex = Metaplex.make(connection).use(walletAdapterIdentity(wallet));
+  const metaplex = useMetaplex()
 
   const [nftAddress, setNftAddress] = useState<string>()
   // const param = useRef<`0x${string}`>('0x')

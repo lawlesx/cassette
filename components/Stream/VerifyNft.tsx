@@ -1,16 +1,24 @@
 'use client'
+import useMetaplex from '@/Hooks/useMetaplex'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { PublicKey } from '@solana/web3.js'
 import { Dispatch, FC, SetStateAction } from 'react'
 import { toast } from 'react-hot-toast'
 
 const VerifyNft: FC<{ nftAddress: string, setIsVerified: Dispatch<SetStateAction<boolean>> }> = ({ nftAddress, setIsVerified }) => {
-  const userAddress = '0x8c8b2b8c1b0f1f2f3c3c4c5c6c7c8c9c0c1c2c3c'
+  const metaplex = useMetaplex()
+  const { publicKey } = useWallet()
+  const userAddress = publicKey?.toString()
+
+
   const handleVerify = async () => {
     if (!userAddress) return toast.error('Connect wallet first')
+    const nftPublicKey = new PublicKey(nftAddress)
 
     console.table({ nftAddress, userAddress })
+    const nft = await metaplex.nfts().findByMint({ mintAddress: nftPublicKey })
 
-    console.log('NFT holder Sample');
-    if (true) {
+    if (nft.creators[0]?.address.toString() === publicKey?.toString()) {
       console.log('Verified')
       toast.success('NFT detected in wallet')
       setIsVerified(true)
